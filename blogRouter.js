@@ -41,5 +41,37 @@ router.get("/:id", (req, res) => {
 })
 
 
+// GET comments associated with a post (speicfied by id): /api/posts/:id/comments
+router.get("/:id/comments", (req, res) => {
+
+    const {id} = req.params;
+
+    database.findById(id)
+        .then(data => {
+
+            console.log("GET post with id", id, ":", data);
+
+            if (!data)
+                { res.status(404).json({ message: "The post with the specified ID does not exist." }) }
+            else
+                {
+                    database.findPostComments(id)
+                        .then(commentData => {
+                            console.log("Comments from post with id", id, " found:", commentData);
+                            res.status(200).json(commentData);
+                        })
+                        .catch(error => {
+                            console.log("Error getting commetns from post with id", id, "):", error);
+                            res.status(500).json({ error: "The comments information could not be retrieved." })
+                        })
+                }
+        })
+        .catch(error => {
+            console.log("Error (GET post with id", id, "):", error);
+            res.status(500).json({ error: "The post information could not be retrieved." });
+        })
+})
+
+
 
 module.exports = router;
