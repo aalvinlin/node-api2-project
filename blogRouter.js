@@ -61,7 +61,7 @@ router.get("/:id/comments", (req, res) => {
                             res.status(200).json(commentData);
                         })
                         .catch(error => {
-                            console.log("Error getting commetns from post with id", id, "):", error);
+                            console.log("Error getting comments from post with id", id, "):", error);
                             res.status(500).json({ error: "The comments information could not be retrieved." })
                         })
                 }
@@ -72,6 +72,35 @@ router.get("/:id/comments", (req, res) => {
         })
 })
 
+
+// DELETE post by id: /api/posts/:id
+router.delete("/:id", (req, res) => {
+
+    const {id} = req.params;
+
+    database.findById(id)
+        .then(data => {
+
+            console.log("Looking for post with id", id, ":", data);
+
+            if (!data)
+                { res.status(404).json({ message: "The post with the specified ID does not exist." }) }
+            else
+            {
+                database.remove(id)
+                    .then(deletedResult => {
+                        console.log("Deleting post with id", id, " found:", data);
+                        res.status(200).json(data);
+                    })
+                    .catch(error => {
+                        res.status(500).json({ error: "The post could not be removed." })
+                    })
+            }
+        })
+        .catch(error => {
+            res.status(500).json({ error: "Could not connect to database." });
+        })
+})
 
 
 module.exports = router;
