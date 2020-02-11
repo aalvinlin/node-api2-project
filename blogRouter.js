@@ -103,4 +103,37 @@ router.delete("/:id", (req, res) => {
 })
 
 
+// PUT post by id: /api/posts/:id
+router.put("/:id", (req, res) => {
+
+    const {id} = req.params;
+
+    database.findById(id)
+        .then(data => {
+
+            console.log("Looking for post with id", id, ":", data);
+
+            if (data.length === 0)
+                { res.status(404).json({ message: "The post with the specified ID does not exist." }) }
+
+            else if (!req.body.title || !req.body.contents)
+                { res.status(400).json({ message: "Please provide title and contents for the post." }) }
+
+            else
+            {
+                database.update(id, req.body)
+                    .then(updatedResult => {
+                        console.log("Updating post with id", id, " found:", data);
+                        res.status(200).json(updatedResult);
+                    })
+                    .catch(error => {
+                        res.status(500).json({ error: "The post could not be modified." })
+                    })
+            }
+        })
+        .catch(error => {
+            res.status(500).json({ error: "Could not connect to database." });
+        })
+})
+
 module.exports = router;
