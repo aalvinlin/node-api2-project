@@ -23,6 +23,44 @@ router.post("/", (req, res) => {
 
 })
 
+// POST a new comment to a post (specified by id): /api/posts/:id/comments
+router.post("/:id/comments", (req, res) => {
+
+    const {id} = req.params;
+
+    database.findById(id)
+        .then(data => {
+
+            console.log("Looking for a post with id", id, ":", data);
+
+            if (!data)
+                { res.status(404).json({ message: "The post with the specified ID does not exist." }) }
+
+            else if (!req.body.text)
+                { res.status(400).json({ message: "Please provide text for the comment." }) }
+
+            else
+                {
+                    let commentObject = { text: req.body.text, post_id: id};
+
+                    console.log("About to add comment:", commentObject);
+
+                    database.insertComment(commentObject)
+                        .then(commentData => {
+                            
+                            res.status(201).json(commentData);
+                        })
+                        .catch(error => {
+                            res.status(500).json({ error: "There was an error while saving the comment to the database." })
+                        })
+                }
+        })
+        .catch(error => {
+            console.log("Error (GET post with id", id, "):", error);
+            res.status(500).json({ error: "The post information could not be retrieved." });
+        })
+})
+
 
 // GET all posts in database: /api/posts
 router.get("/", (req, res) => {
