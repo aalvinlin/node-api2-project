@@ -1,0 +1,31 @@
+* {
+    box-sizing: border-box;
+    font-family: "Viner Hand ITC";
+
+    color: #331111;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+body {
+    background-image: url("./images/hills.jpg");
+    background-size: stretch;
+    background-repeat: no-repeat;
+    background-position: left center;
+}
+
+#root {
+    height: 98vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    
+}
+
+.app {
+    width: 100%;
+    /* max-width: 1200px; */
+    height: 100%;
+
+    padding: 2vw;
+}
